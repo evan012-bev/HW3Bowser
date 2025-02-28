@@ -1,13 +1,11 @@
 
 /*
- * *** YOUR NAME GOES HERE / YOUR SECTION NUMBER ***
+ * *** TUKER MOOSE - COMP 272/400C-002 - Spring 2025 ***
  *
  * This java file is a Java object implementing simple AVL Tree.
  * You are to complete the deleteElement method.
  *
  */
-
-import java.lang.Math;
 
 
 /**
@@ -342,6 +340,53 @@ class LUC_AVLTree {
      */
 
     private Node deleteElement(int value, Node node) {
+
+        if (node == null) {
+            return null;
+        }
+
+        if (value < node.value) {
+            node.leftChild = deleteElement(value, node.leftChild);
+        } else if (value > node.value) {
+            node.rightChild = deleteElement(value, node.rightChild);
+        } else {
+
+            if (node.leftChild == null && node.rightChild == null) {    
+                return null;
+            }
+
+            if (node.leftChild == null) {
+                return node.rightChild;
+            } else if (node.rightChild == null) {
+                return node.leftChild;
+            }
+
+            Node succNode = minValueNode(node.rightChild); 
+            node.value = succNode.value;
+            node.rightChild = deleteElement(succNode.value, node.rightChild);
+        }
+
+        node.height = 1 + getMaxHeight(getHeight(node.leftChild),getHeight(node.rightChild)); 
+
+        int balance = getBalanceFactor(node); 
+
+        if (balance > 1 && getBalanceFactor(node.leftChild) >= 0){
+            return LLRotation(node);
+        }
+
+        if (balance > 1 && getBalanceFactor(node.leftChild) < 0){
+            node.leftChild = RRRotation(node.leftChild);
+            return LLRotation(node);
+        }
+
+        if (balance < -1 && getBalanceFactor(node.rightChild) <= 0) {
+            return RRRotation(node);
+        }
+
+        if (balance < -1 && getBalanceFactor(node.rightChild) > 0){
+            node.rightChild = LLRotation(node.rightChild);
+            return RRRotation(node);
+        }
 
         /*
          * ADD CODE HERE
